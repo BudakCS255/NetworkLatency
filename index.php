@@ -183,6 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Redirect back to the index.php with a message
     header("Location: index.php?message=" . urlencode($message));
+    header("Location: index.php?message=" . urlencode($message . ' ' . $timeMessage));
     exit();
 }
 
