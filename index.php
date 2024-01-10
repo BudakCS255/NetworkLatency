@@ -118,25 +118,12 @@ if (isset($_GET['download']) && $_GET['download'] == 'Download Images' && isset(
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Start measuring time
     $startTime = microtime(true);
-    // Database configuration
-    $dbHost = 'localhost';
-    $dbUser = 'afnan';
-    $dbPass = 'john_wick_77';
-    $dbName = 'mywebsite_images';
-    $encryptionKey = '123'; // Replace with your actual key
-
-    // Create a database connection
-    $conn = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-
-    // Check the connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     // Check if files were uploaded
     if (isset($_FILES["image"])) {
         $uploadedFiles = $_FILES["image"];
         $folder = sanitize_folder($_POST["folder"]); // Sanitize the folder input
+        $encryptImages = isset($_POST['encrypt']); // Check if encryption is requested
 
         // Loop through the uploaded files
         foreach ($uploadedFiles["error"] as $key => $error) {
@@ -145,6 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Get the image data
                 $imageData = file_get_contents($uploadedFiles["tmp_name"][$key]);
 
+                // Encrypt the image data if encryption is requested
                 if ($encryptImages) {
                     $imageData = xor_encrypt_decrypt($imageData, $encryptionKey);
                 }
@@ -153,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $conn->prepare("INSERT INTO $folder (images) VALUES (?)");
                 $null = NULL; // This is needed to bind the blob data
                 $stmt->bind_param("b", $null);
-                $stmt->send_long_data(0, $encryptedImageData);
+                $stmt->send_long_data(0, $imageData);
                 $stmt->execute();
 
                 if ($stmt->affected_rows > 0) {
@@ -183,7 +171,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 
     // Redirect back to the index.php with a message
-    header("Location: index.php?message=" . urlencode($message));
     header("Location: index.php?message=" . urlencode($message . ' ' . $timeMessage));
     exit();
 }
