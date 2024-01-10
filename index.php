@@ -145,8 +145,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Get the image data
                 $imageData = file_get_contents($uploadedFiles["tmp_name"][$key]);
 
-                // Encrypt the image data
-                $encryptedImageData = xor_encrypt_decrypt($imageData, $encryptionKey);
+                if ($encryptImages) {
+                    $imageData = xor_encrypt_decrypt($imageData, $encryptionKey);
+                }
 
                 // Prepare and execute the database insertion
                 $stmt = $conn->prepare("INSERT INTO $folder (images) VALUES (?)");
@@ -328,20 +329,23 @@ $conn->close();
 </head>
 <body>
 <!-- HTML form for image upload -->
-<h1>Upload Images1</h1>
-<form action="index.php" method="POST" enctype="multipart/form-data">
-    <label for="image">Choose image(s) to upload:</label>
-    <input type="file" name="image[]" id="image" accept="image/*" multiple>
-    <br>
-    <label for="folder">Select a folder:</label>
-    <select name="folder" id="folder">
-        <option value="Case001">Case001</option>
-        <option value="Case002">Case002</option>
-        <option value="Case003">Case003</option>
-    </select>
-    <br>
-    <input type="submit" value="Upload">
-</form>
+<h1>Upload Images</h1>
+    <form action="index.php" method="POST" enctype="multipart/form-data">
+        <label for="image">Choose image(s) to upload:</label>
+        <input type="file" name="image[]" id="image" accept="image/*" multiple>
+        <br>
+        <label for="folder">Select a folder:</label>
+        <select name="folder" id="folder">
+            <option value="Case001">Case001</option>
+            <option value="Case002">Case002</option>
+            <option value="Case003">Case003</option>
+        </select>
+        <br>
+        <input type="checkbox" name="encrypt" id="encrypt">
+        <label for="encrypt">Encrypt Images</label>
+        <br>
+        <input type="submit" value="Upload">
+    </form>
 
 <!-- HTML form for image viewing -->
 <h1>View Images</h1>
