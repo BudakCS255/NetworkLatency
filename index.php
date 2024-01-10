@@ -116,6 +116,8 @@ if (isset($_GET['download']) && $_GET['download'] == 'Download Images' && isset(
 
 // Check if the server request method is POST for file upload
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Start measuring time
+    $startTime = microtime(true);
     // Database configuration
     $dbHost = 'localhost';
     $dbUser = 'afnan';
@@ -168,6 +170,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $message = "No images were uploaded.";
     }
+
+    // End measuring time
+    $endTime = microtime(true);
+
+    // Calculate and prepare the processing time message
+    $processingTime = $endTime - $startTime;
+    $timeMessage = "Processing time: " . number_format($processingTime, 2) . " seconds.";
 
     // Close the database connection
     $conn->close();
