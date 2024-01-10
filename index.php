@@ -116,8 +116,6 @@ if (isset($_GET['download']) && $_GET['download'] == 'Download Images' && isset(
 
 // Check if the server request method is POST for file upload
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $startTime = microtime(true);
-
     // Database configuration
     $dbHost = 'localhost';
     $dbUser = 'afnan';
@@ -176,15 +174,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Redirect back to the index.php with a message
     header("Location: index.php?message=" . urlencode($message));
-    // End measuring time
-    $endTime = microtime(true);
-
-    // Calculate and prepare the processing time message
-    $processingTime = $endTime - $startTime;
-    $timeMessage = "Processing time: " . number_format($processingTime, 2) . " seconds.";
-
-    // Include the processing time in the redirection URL
-    header("Location: index.php?message=" . urlencode($message . ' ' . $timeMessage));
     exit();
 }
 
@@ -329,7 +318,7 @@ $conn->close();
 </head>
 <body>
 <!-- HTML form for image upload -->
-<h1>Upload Images</h1>
+<h1>Upload Images1</h1>
 <form action="index.php" method="POST" enctype="multipart/form-data">
     <label for="image">Choose image(s) to upload:</label>
     <input type="file" name="image[]" id="image" accept="image/*" multiple>
